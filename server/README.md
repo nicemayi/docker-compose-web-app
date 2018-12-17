@@ -1,0 +1,1 @@
+docker -t server -f Dockerfile.dev .

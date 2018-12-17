@@ -1,0 +1,1 @@
+docker -t worker -f Dockerfile.dev .
