@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t nicemayi/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run nicemayi/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t nicemayi/multi-client ./client
+  - docker build -t nicemayi/multi-nginx ./nginx
+  - docker build -t nicemayi/multi-server ./server
+  - docker build -t nicemayi/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push nicemayi/multi-client
+  - docker push nicemayi/multi-nginx
+  - docker push nicemayi/multi-server
+  - docker push nicemayi/multi-worker
